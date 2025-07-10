@@ -43,10 +43,24 @@ def create_app():
                 return redirect(url_for('user_dashboard'))
         return render_template('index.html')
     
-    @app.route('/user_dashboard')
+    @app.route("/user_dashboard")
     def user_dashboard():
-        return render_template('user_dashboard.html')
-    
+        # Dummy data for stats and bookings for testing
+        stats = {
+            "total_bookings": 10,
+            "pending_bookings": 2,
+            "completed_bookings": 8,
+            "favorite_services": 5
+        }
+        recommended_services = [
+            {"id": 1, "service_name": "Gardening", "provider_name": "Alice Green", "category_name": "Home Services", "price": 50.00},
+            {"id": 2, "service_name": "Computer Repair", "provider_name": "Bob Fixit", "category_name": "Tech Services", "price": 75.00}
+        ]
+        bookings = [
+            {"id": 1, "service_name": "House Cleaning", "provider_name": "John Doe", "booking_date": "2025-07-15", "booking_time": "10:00 AM", "status": "pending"},
+            {"id": 2, "service_name": "Car Wash", "provider_name": "Jane Smith", "booking_date": "2025-07-10", "booking_time": "02:00 PM", "status": "completed"}
+        ]
+        return render_template("user_dashboard.html", stats=stats, bookings=bookings, recommended_services=recommended_services)    
     @app.route('/provider_dashboard')
     def provider_dashboard():
         return render_template('provider_dashboard.html')

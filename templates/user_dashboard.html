@@ -12,11 +12,11 @@
             <div class="col-lg-8">
                 <div class="d-flex align-items-center">
                     <div class="dashboard-avatar mr-4" style="width: 80px; height: 80px; background: rgba(255,255,255,0.2); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 2rem; font-weight: bold; border: 3px solid rgba(255,255,255,0.3);">
-                        {{ g.user.name[0].upper() }}
+                        {{ g.user.name[0].upper() if g.user and g.user.name else 'U' }}
                     </div>
                     <div>
-                        <h1 class="text-white font-weight-bold mb-1">Welcome back, {{ g.user.name.split()[0] }}!</h1>
-                        <p class="text-white-50 mb-2">Manage your bookings and discover new services</p>
+                        <h1 class="text-white font-weight-bold mb-1">Welcome back, {{ g.user.name.split()[0] if g.user and g.user.name else 'User' }}!</h1>
+                        <p class="text-white-50 mb-2">{{ g.user.email if g.user and g.user.email else 'user@example.com' }}</p>
                         <div class="d-flex align-items-center">
                             <span class="badge badge-success mr-2">
                                 <i class="fas fa-circle mr-1"></i>Active Member
@@ -229,7 +229,7 @@
                     <a href="{{ url_for('profile.notifications') }}" class="btn btn-outline-secondary btn-sm w-100 mb-2">
                         <i class="fas fa-bell mr-2"></i>Notifications
                     </a>
-                    <a href="{{ url_for('chat.list_conversations') }}" class="btn btn-outline-info btn-sm w-100">
+                    <a href="{{ url_for("chat.conversations") }}" class="btn btn-outline-info btn-sm w-100">
                         <i class="fas fa-comments mr-2"></i>Messages
                     </a>
                 </div>
@@ -304,7 +304,7 @@
                     <a href="{{ url_for('profile.support_tickets') }}" class="btn btn-outline-secondary btn-sm w-100 mb-2">
                         <i class="fas fa-ticket-alt mr-2"></i>Support Tickets
                     </a>
-                    <a href="{{ url_for('help.faq') }}" class="btn btn-outline-info btn-sm w-100">
+                    <a href="#" class="btn btn-outline-info btn-sm w-100">
                         <i class="fas fa-question mr-2"></i>FAQ
                     </a>
                 </div>
