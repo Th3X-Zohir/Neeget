@@ -85,13 +85,8 @@
                             <a class="nav-link dropdown-toggle creative-nav-link" href="#" id="navbarDropdown" role="button" data-toggle="dropdown">
                                 <i class="fas fa-user"></i> {{ g.user.name }}
                             </a>
-                            <div class="dropdown-menu">
-                                <a class="dropdown-item" href="{{ url_for('profile.view') }}">
-                                    <i class="fas fa-user-circle"></i> Profile
-                                </a>
-                                <a class="dropdown-item" href="{{ url_for('profile.notifications') }}">
-                                    <i class="fas fa-bell"></i> Notifications
-                                </a>
+                            <div class="dropdown-menu">                                <a class="dropdown-item" href="{{ url_for("profile.view", user_id=g.user.id) }}">                                 <i class="fas fa-user-circle"></i> Profile
+                                </a
                                 <div class="dropdown-divider"></div>
                                 <a class="dropdown-item" href="{{ url_for('auth.logout') }}">
                                     <i class="fas fa-sign-out-alt"></i> Logout
@@ -138,8 +133,7 @@
             <a href="{{ url_for('chat.list_conversations') if 'chat.list_conversations' in url_for.__globals__ else '#' }}" class="mobile-bottom-nav-item">
                 <i class="fas fa-comments mobile-bottom-nav-icon"></i>
                 <span class="mobile-bottom-nav-label">Messages</span>
-            </a>
-            <a href="{{ url_for('profile.view') }}" class="mobile-bottom-nav-item {% if request.endpoint == 'profile.view' %}active{% endif %}">
+            </a            <a href="{{ url_for("profile.view", user_id=g.user.id) }}" class="mobile-bottom-nav-item {% if request.endpoint == "profile.view" %}active{% endif %}">">
                 <i class="fas fa-user mobile-bottom-nav-icon"></i>
                 <span class="mobile-bottom-nav-label">Profile</span>
             </a>

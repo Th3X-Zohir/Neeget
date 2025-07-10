@@ -168,15 +168,9 @@
                                             {% endif %}
                                         </div>
                                         
-                                        <div class="message-time">
-                                            {{ moment(message.sent_at).format('MMM DD, HH:mm') if message.sent_at else 'Just now' }}
-                                            {% if message.is_own and not message.get('is_deleted') %}
-                                                <button class="btn btn-sm btn-link text-light p-0 ml-2 delete-message" 
-                                                        data-message-id="{{ message.id }}" title="Delete message">
-                                                    <i class="fas fa-trash-alt"></i>
-                                                </button>
-                                            {% endif %}
-                                        </div>
+                                            <span class="message-time" data-timestamp="{{ message.sent_at }}">
+                                                {{ message.sent_at if message.sent_at else 'Just now' }}
+                                            </span>
                                     </div>
                                 </div>
                             {% endfor %}
@@ -246,11 +240,9 @@
 
     <!-- Scripts -->
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="{{ url_for('static', filename='js/mobile.js') }}"></script>
-    
-    <!-- Moment.js for time formatting -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.4/moment.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js"></script
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.4/moment.min.js"></script>   
+
     
     <script>
         $(document).ready(function() {

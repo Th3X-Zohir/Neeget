@@ -431,11 +431,7 @@
 {% block extra_js %}
 <script>
 function startChat() {
-    if (window.creativeNeeget) {
-        window.creativeNeeget.startChat({{ service.provider_id }});
-    } else {
-        alert('Chat feature will be available soon!');
-    }
+    window.location.href = "{{ url_for(\'chat.conversations\') }}";
 }
 
 function callProvider() {

@@ -223,10 +223,10 @@
                     <a href="{{ url_for('bookings.list_bookings') }}" class="btn btn-creative-secondary btn-sm w-100 mb-2">
                         <i class="fas fa-calendar mr-2"></i>My Bookings
                     </a>
-                    <a href="{{ url_for('profile.view') }}" class="btn btn-outline-primary btn-sm w-100 mb-2">
+                    <a href="{{ url_for("profile.view", user_id=g.user.id) }}" class="btn btn-outline-primary btn-sm w-100 mb-2">
                         <i class="fas fa-user mr-2"></i>My Profile
                     </a>
-                    <a href="{{ url_for('profile.notifications') }}" class="btn btn-outline-secondary btn-sm w-100 mb-2">
+                    <a href="{{ url_for("profile.edit") }}" class="btn btn-outline-secondary btn-sm w-100 mb-2">
                         <i class="fas fa-bell mr-2"></i>Notifications
                     </a>
                     <a href="{{ url_for("chat.conversations") }}" class="btn btn-outline-info btn-sm w-100">
@@ -300,9 +300,7 @@
                 <div class="help-actions">
                     <button class="btn btn-outline-primary btn-sm w-100 mb-2" onclick="openSupportChat()">
                         <i class="fas fa-comments mr-2"></i>Live Chat Support
-                    </button>
-                    <a href="{{ url_for('profile.support_tickets') }}" class="btn btn-outline-secondary btn-sm w-100 mb-2">
-                        <i class="fas fa-ticket-alt mr-2"></i>Support Tickets
+                    </button>                    <a href="{{ url_for("admin.support_tickets") }}" class="btn btn-outline-secondary btn-sm w-100 mb-2">                        <i class="fas fa-ticket-alt mr-2"></i>Support Tickets
                     </a>
                     <a href="#" class="btn btn-outline-info btn-sm w-100">
                         <i class="fas fa-question mr-2"></i>FAQ

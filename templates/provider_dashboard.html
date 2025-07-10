@@ -234,31 +234,15 @@
                         <i class="fas fa-bolt"></i>
                     </div>
                     <h5 class="creative-card-title mb-0">Quick Actions</h5>
-                </div>
-                
-                <div class="quick-actions">
-                    <a href="{{ url_for('services.add') }}" class="btn btn-creative-primary btn-sm w-100 mb-2">
+                       <a href="{{ url_for("services.add") }}" class="btn btn-creative-primary btn-sm w-100 mb-2">
                         <i class="fas fa-plus mr-2"></i>Add New Service
                     </a>
-                    <a href="{{ url_for('bookings.list_bookings') }}" class="btn btn-creative-secondary btn-sm w-100 mb-2">
-                        <i class="fas fa-calendar mr-2"></i>Booking Requests
-                    </a>
-                    <a href="{{ url_for('services.manage') }}" class="btn btn-outline-primary btn-sm w-100 mb-2">
-                        <i class="fas fa-cog mr-2"></i>Manage Services
-                    </a>
-                    <a href="{{ url_for('profile.view') }}" class="btn btn-outline-secondary btn-sm w-100 mb-2">
+                    <a href="{{ url_for("profile.view", user_id=g.user.id) }}" class="btn btn-outline-secondary btn-sm w-100 mb-2">
                         <i class="fas fa-user mr-2"></i>My Profile
                     </a>
-                    <a href="{{ url_for('chat.list_conversations') }}" class="btn btn-outline-info btn-sm w-100">
+                    <a href="{{ url_for("chat.conversations") }}" class="btn btn-outline-info btn-sm w-100">
                         <i class="fas fa-comments mr-2"></i>Messages
-                    </a>
-                </div>
-            </div>
-
-            <!-- Performance Metrics -->
-            <div class="creative-card mb-4">
-                <div class="d-flex align-items-center mb-3">
-                    <div class="creative-card-icon mr-3" style="width: 40px; height: 40px; font-size: 1rem;">
+                    </a>                 <div class="creative-card-icon mr-3" style="width: 40px; height: 40px; font-size: 1rem;">
                         <i class="fas fa-chart-line"></i>
                     </div>
                     <h5 class="creative-card-title mb-0">Performance</h5>
@@ -345,7 +329,7 @@
                 {% endif %}
                 
                 <div class="reviews-actions mt-3">
-                    <a href="{{ url_for('profile.reviews') }}" class="btn btn-outline-primary btn-sm w-100">
+                    <a href="{{ url_for("profile.view", user_id=g.user.id) }}" class="btn btn-outline-primary btn-sm w-100">
                         <i class="fas fa-eye mr-2"></i>View All Reviews
                     </a>
                 </div>

@@ -263,8 +263,7 @@
                     <a href="{{ url_for('profile.change_password') }}" class="btn btn-creative-secondary btn-sm w-100 mb-2">
                         <i class="fas fa-key mr-2"></i>Change Password
                     </a>
-                    <a href="{{ url_for('profile.notifications') }}" class="btn btn-outline-primary btn-sm w-100 mb-2">
-                        <i class="fas fa-bell mr-2"></i>Notifications
+                    <a href="{{ url_for("profile.edit") }}" class="btn btn-outline-primary btn-sm w-100 mb-2">                       <i class="fas fa-bell mr-2"></i>Notifications
                     </a>
                     {% if user.role == 'user' %}
                     <a href="{{ url_for('bookings.list_bookings') }}" class="btn btn-outline-secondary btn-sm w-100 mb-2">
