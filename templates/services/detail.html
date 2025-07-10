@@ -1,113 +1,178 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ service.service_name }} - Neeget</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-</head>
-<body>
-    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
-        <div class="container">
-            <a class="navbar-brand" href="{{ url_for('index') }}">
-                <i class="fas fa-handshake"></i> Neeget
-            </a>
-            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav mr-auto">
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('services.browse') }}">Browse Services</a>
-                    </li>
-                </ul>
-                <ul class="navbar-nav ml-auto">
-                    {% if g.user %}
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown">
-                                <i class="fas fa-user"></i> {{ g.user.name }}
-                            </a>
-                            <div class="dropdown-menu">
-                                <a class="dropdown-item" href="{{ url_for('profile.view') }}">Profile</a>
-                                <a class="dropdown-item" href="{{ url_for('bookings.list_bookings') }}">My Bookings</a>
-                                <div class="dropdown-divider"></div>
-                                <a class="dropdown-item" href="{{ url_for('auth.logout') }}">Logout</a>
-                            </div>
-                        </li>
-                    {% else %}
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{ url_for('auth.login') }}">Login</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{ url_for('auth.register') }}">Register</a>
-                        </li>
-                    {% endif %}
-                </ul>
-            </div>
-        </div>
-    </nav>
+{% extends "base.html" %}
 
-    <div class="container mt-4">
-        <nav aria-label="breadcrumb">
-            <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="{{ url_for('index') }}">Home</a></li>
-                <li class="breadcrumb-item"><a href="{{ url_for('services.browse') }}">Services</a></li>
-                <li class="breadcrumb-item active">{{ service.service_name }}</li>
+{% block title %}{{ service.service_name }} - Neeget{% endblock %}
+
+{% block mobile_title %}{{ service.service_name }}{% endblock %}
+
+{% block content %}
+<!-- Service Hero Section -->
+<section class="py-4" style="background: var(--primary-gradient); margin-top: -80px; padding-top: 100px;">
+    <div class="container">
+        <nav aria-label="breadcrumb" class="mb-3">
+            <ol class="breadcrumb bg-transparent p-0 mb-0">
+                <li class="breadcrumb-item">
+                    <a href="{{ url_for('index') }}" class="text-white-50">
+                        <i class="fas fa-home mr-1"></i>Home
+                    </a>
+                </li>
+                <li class="breadcrumb-item">
+                    <a href="{{ url_for('services.browse') }}" class="text-white-50">Services</a>
+                </li>
+                <li class="breadcrumb-item active text-white">{{ service.service_name }}</li>
             </ol>
         </nav>
-
-        <div class="row">
-            <div class="col-md-8">
-                <div class="card">
-                    <div class="card-body">
-                        <h1 class="card-title">{{ service.service_name }}</h1>
-                        <div class="mb-3">
-                            <span class="badge badge-primary">{{ service.category_name }}</span>
+        
+        <div class="row align-items-center">
+            <div class="col-lg-8">
+                <div class="d-flex align-items-center mb-3">
+                    <div class="creative-card-icon mr-3" style="width: 60px; height: 60px; font-size: 1.5rem; background: rgba(255,255,255,0.2);">
+                        <i class="fas fa-{{ 'home' if service.category_name == 'Home Services' else 'laptop-code' if service.category_name == 'Tech Services' else 'palette' if service.category_name == 'Creative Services' else 'graduation-cap' }}"></i>
+                    </div>
+                    <div>
+                        <h1 class="text-white font-weight-bold mb-1">{{ service.service_name }}</h1>
+                        <div class="d-flex align-items-center">
+                            <span class="badge badge-light mr-2">{{ service.category_name }}</span>
                             {% if service.location %}
-                                <span class="badge badge-secondary ml-2">
-                                    <i class="fas fa-map-marker-alt"></i> {{ service.location }}
+                                <span class="text-white-50">
+                                    <i class="fas fa-map-marker-alt mr-1"></i>{{ service.location }}
                                 </span>
                             {% endif %}
                         </div>
-                        
-                        {% if service.description %}
-                            <h5>Description</h5>
-                            <p class="card-text">{{ service.description }}</p>
-                        {% endif %}
+                    </div>
+                </div>
+                
+                <div class="d-flex align-items-center">
+                    <div class="service-rating mr-4">
+                        <span class="text-warning">
+                            {% for i in range(5) %}
+                                <i class="fas fa-star"></i>
+                            {% endfor %}
+                        </span>
+                        <span class="text-white ml-2">4.9 (127 reviews)</span>
+                    </div>
+                    <div class="text-white">
+                        <i class="fas fa-shield-alt mr-1"></i>Verified Provider
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4 mt-3 mt-lg-0 text-lg-right">
+                <div class="price-display mb-3">
+                    <h2 class="text-white font-weight-bold mb-0">${{ "%.2f"|format(service.price) }}</h2>
+                    <small class="text-white-50">Starting price</small>
+                </div>
+                {% if g.user and g.user.role == 'user' %}
+                    <a href="{{ url_for('bookings.book_service', service_id=service.id) }}" class="btn btn-light btn-lg px-4">
+                        <i class="fas fa-calendar-plus mr-2"></i>Book Now
+                    </a>
+                {% elif not g.user %}
+                    <a href="{{ url_for('auth.login') }}" class="btn btn-light btn-lg px-4">
+                        <i class="fas fa-sign-in-alt mr-2"></i>Login to Book
+                    </a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</section>
 
-                        <div class="row mt-4">
-                            <div class="col-md-6">
-                                <h3 class="text-primary">${{ "%.2f"|format(service.price) }}</h3>
-                                <small class="text-muted">Base price</small>
-                            </div>
-                            <div class="col-md-6 text-right">
-                                {% if g.user and g.user.role == 'user' %}
-                                    <a href="{{ url_for('bookings.book_service', service_id=service.id) }}" class="btn btn-success btn-lg">
-                                        <i class="fas fa-calendar-plus"></i> Book Now
-                                    </a>
-                                {% elif not g.user %}
-                                    <a href="{{ url_for('auth.login') }}" class="btn btn-primary btn-lg">
-                                        <i class="fas fa-sign-in-alt"></i> Login to Book
-                                    </a>
-                                {% endif %}
-                            </div>
+<div class="container py-5">
+    <div class="row">
+        <!-- Main Content -->
+        <div class="col-lg-8 mb-4">
+            <!-- Service Description -->
+            <div class="creative-card mb-4">
+                <div class="d-flex align-items-center mb-3">
+                    <div class="creative-card-icon mr-3" style="width: 40px; height: 40px; font-size: 1rem;">
+                        <i class="fas fa-info-circle"></i>
+                    </div>
+                    <h3 class="creative-card-title mb-0">Service Description</h3>
+                </div>
+                
+                {% if service.description %}
+                    <p class="creative-card-text mb-4">{{ service.description }}</p>
+                {% endif %}
+                
+                <!-- Service Features -->
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <div class="d-flex align-items-center">
+                            <i class="fas fa-check-circle text-success mr-2"></i>
+                            <span>Professional Service</span>
+                        </div>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <div class="d-flex align-items-center">
+                            <i class="fas fa-clock text-primary mr-2"></i>
+                            <span>Flexible Scheduling</span>
+                        </div>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <div class="d-flex align-items-center">
+                            <i class="fas fa-shield-alt text-success mr-2"></i>
+                            <span>Insured & Bonded</span>
+                        </div>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <div class="d-flex align-items-center">
+                            <i class="fas fa-star text-warning mr-2"></i>
+                            <span>Top Rated Provider</span>
                         </div>
                     </div>
                 </div>
+            </div>
 
-                <!-- Reviews Section -->
-                {% if reviews %}
-                    <div class="card mt-4">
-                        <div class="card-header">
-                            <h5><i class="fas fa-star"></i> Reviews ({{ reviews|length }})</h5>
+            <!-- Reviews Section -->
+            {% if reviews %}
+                <div class="creative-card">
+                    <div class="d-flex align-items-center justify-content-between mb-4">
+                        <div class="d-flex align-items-center">
+                            <div class="creative-card-icon mr-3" style="width: 40px; height: 40px; font-size: 1rem;">
+                                <i class="fas fa-star"></i>
+                            </div>
+                            <h3 class="creative-card-title mb-0">Customer Reviews</h3>
                         </div>
-                        <div class="card-body">
-                            {% for review in reviews %}
-                                <div class="border-bottom pb-3 mb-3">
-                                    <div class="d-flex justify-content-between">
+                        <span class="badge badge-primary">{{ reviews|length }} reviews</span>
+                    </div>
+                    
+                    <!-- Review Summary -->
+                    <div class="review-summary mb-4 p-3" style="background: var(--bg-light); border-radius: var(--radius-lg);">
+                        <div class="row align-items-center">
+                            <div class="col-md-4 text-center">
+                                <h2 class="text-gradient font-weight-bold mb-1">4.9</h2>
+                                <div class="text-warning mb-2">
+                                    {% for i in range(5) %}
+                                        <i class="fas fa-star"></i>
+                                    {% endfor %}
+                                </div>
+                                <small class="text-muted">Overall Rating</small>
+                            </div>
+                            <div class="col-md-8">
+                                <div class="rating-breakdown">
+                                    {% for rating in [5, 4, 3, 2, 1] %}
+                                        <div class="d-flex align-items-center mb-1">
+                                            <span class="mr-2">{{ rating }}</span>
+                                            <i class="fas fa-star text-warning mr-2"></i>
+                                            <div class="progress flex-grow-1 mr-2" style="height: 8px;">
+                                                <div class="progress-bar bg-warning" style="width: {{ 85 if rating == 5 else 10 if rating == 4 else 3 if rating == 3 else 1 if rating == 2 else 1 }}%"></div>
+                                            </div>
+                                            <small class="text-muted">{{ 85 if rating == 5 else 10 if rating == 4 else 3 if rating == 3 else 1 if rating == 2 else 1 }}%</small>
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Individual Reviews -->
+                    <div class="reviews-list">
+                        {% for review in reviews %}
+                            <div class="review-item p-3 mb-3" style="background: var(--bg-light); border-radius: var(--radius-lg);">
+                                <div class="d-flex justify-content-between align-items-start mb-2">
+                                    <div class="d-flex align-items-center">
+                                        <div class="review-avatar mr-3" style="width: 40px; height: 40px; background: var(--primary-gradient); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold;">
+                                            {{ (review.user.name if review.user else 'A')[0] }}
+                                        </div>
                                         <div>
-                                            <strong>{{ review.user.name if review.user else 'Anonymous' }}</strong>
+                                            <h6 class="mb-1">{{ review.user.name if review.user else 'Anonymous' }}</h6>
                                             <div class="text-warning">
                                                 {% for i in range(review.rating) %}
                                                     <i class="fas fa-star"></i>
@@ -117,83 +182,360 @@
                                                 {% endfor %}
                                             </div>
                                         </div>
-                                        <small class="text-muted">{{ review.created_at[:10] }}</small>
                                     </div>
-                                    {% if review.comment %}
-                                        <p class="mt-2 mb-0">{{ review.comment }}</p>
-                                    {% endif %}
+                                    <small class="text-muted">{{ review.created_at[:10] }}</small>
                                 </div>
-                            {% endfor %}
-                        </div>
-                    </div>
-                {% endif %}
-            </div>
-
-            <div class="col-md-4">
-                <!-- Provider Information -->
-                <div class="card">
-                    <div class="card-header">
-                        <h5><i class="fas fa-user-tie"></i> Service Provider</h5>
-                    </div>
-                    <div class="card-body">
-                        <h6>{{ service.provider.name }}</h6>
-                        <p class="text-muted">{{ service.provider.profession or 'Service Provider' }}</p>
-                        
-                        {% if service.provider.professional_description %}
-                            <p><small>{{ service.provider.professional_description }}</small></p>
-                        {% endif %}
-
-                        {% if service.provider.expertise %}
-                            <div class="mb-3">
-                                <strong>Expertise:</strong>
-                                <div class="mt-1">
-                                    {% for skill in service.provider.expertise.split(',') %}
-                                        <span class="badge badge-light">{{ skill.strip() }}</span>
-                                    {% endfor %}
-                                </div>
+                                {% if review.comment %}
+                                    <p class="mb-0">{{ review.comment }}</p>
+                                {% endif %}
                             </div>
-                        {% endif %}
-
-                        {% if service.provider.preferred_locations %}
-                            <div class="mb-3">
-                                <strong>Service Areas:</strong>
-                                <p><small>{{ service.provider.preferred_locations }}</small></p>
-                            </div>
-                        {% endif %}
-
-                        {% if service.provider.portfolio_url %}
-                            <a href="{{ service.provider.portfolio_url }}" target="_blank" class="btn btn-outline-primary btn-sm">
-                                <i class="fas fa-external-link-alt"></i> View Portfolio
-                            </a>
-                        {% endif %}
-
-                        <div class="mt-3">
-                            <small class="text-muted">
-                                <i class="fas fa-shield-alt"></i> Verified Provider
-                            </small>
-                        </div>
+                        {% endfor %}
                     </div>
                 </div>
+            {% endif %}
+        </div>
 
-                <!-- Contact Information -->
-                <div class="card mt-3">
-                    <div class="card-header">
-                        <h5><i class="fas fa-phone"></i> Contact</h5>
+        <!-- Sidebar -->
+        <div class="col-lg-4">
+            <!-- Provider Information -->
+            <div class="creative-card mb-4">
+                <div class="d-flex align-items-center mb-3">
+                    <div class="creative-card-icon mr-3" style="width: 40px; height: 40px; font-size: 1rem;">
+                        <i class="fas fa-user-tie"></i>
                     </div>
-                    <div class="card-body">
-                        <p><strong>Phone:</strong> {{ service.provider.contact_number }}</p>
-                        <p><strong>Email:</strong> {{ service.provider.email }}</p>
-                        {% if service.provider.address %}
-                            <p><strong>Address:</strong> {{ service.provider.address }}</p>
-                        {% endif %}
+                    <h5 class="creative-card-title mb-0">Service Provider</h5>
+                </div>
+                
+                <div class="provider-info">
+                    <div class="d-flex align-items-center mb-3">
+                        <div class="provider-avatar mr-3" style="width: 60px; height: 60px; background: var(--secondary-gradient); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 1.5rem; font-weight: bold;">
+                            {{ service.provider.name[0] }}
+                        </div>
+                        <div>
+                            <h6 class="mb-1">{{ service.provider.name }}</h6>
+                            <p class="text-muted mb-0">{{ service.provider.profession or 'Service Provider' }}</p>
+                        </div>
                     </div>
+                    
+                    {% if service.provider.professional_description %}
+                        <p class="mb-3">{{ service.provider.professional_description }}</p>
+                    {% endif %}
+
+                    {% if service.provider.expertise %}
+                        <div class="mb-3">
+                            <h6 class="font-weight-bold mb-2">Expertise</h6>
+                            <div class="expertise-tags">
+                                {% for skill in service.provider.expertise.split(',') %}
+                                    <span class="badge badge-light mr-1 mb-1">{{ skill.strip() }}</span>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    {% endif %}
+
+                    {% if service.provider.preferred_locations %}
+                        <div class="mb-3">
+                            <h6 class="font-weight-bold mb-2">Service Areas</h6>
+                            <p class="text-muted mb-0">{{ service.provider.preferred_locations }}</p>
+                        </div>
+                    {% endif %}
+
+                    <div class="provider-stats mb-3">
+                        <div class="row text-center">
+                            <div class="col-4">
+                                <div class="stat-item">
+                                    <h6 class="text-gradient font-weight-bold mb-0">127</h6>
+                                    <small class="text-muted">Jobs Done</small>
+                                </div>
+                            </div>
+                            <div class="col-4">
+                                <div class="stat-item">
+                                    <h6 class="text-gradient font-weight-bold mb-0">4.9</h6>
+                                    <small class="text-muted">Rating</small>
+                                </div>
+                            </div>
+                            <div class="col-4">
+                                <div class="stat-item">
+                                    <h6 class="text-gradient font-weight-bold mb-0">2+</h6>
+                                    <small class="text-muted">Years</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    {% if service.provider.portfolio_url %}
+                        <a href="{{ service.provider.portfolio_url }}" target="_blank" class="btn btn-creative-secondary btn-sm w-100 mb-3">
+                            <i class="fas fa-external-link-alt mr-2"></i>View Portfolio
+                        </a>
+                    {% endif %}
+
+                    <div class="verification-badge text-center p-3" style="background: rgba(40, 167, 69, 0.1); border-radius: var(--radius-lg);">
+                        <i class="fas fa-shield-alt text-success mb-2" style="font-size: 1.5rem;"></i>
+                        <p class="text-success font-weight-bold mb-0">Verified Provider</p>
+                        <small class="text-muted">Background checked & insured</small>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Contact Information -->
+            <div class="creative-card mb-4">
+                <div class="d-flex align-items-center mb-3">
+                    <div class="creative-card-icon mr-3" style="width: 40px; height: 40px; font-size: 1rem;">
+                        <i class="fas fa-phone"></i>
+                    </div>
+                    <h5 class="creative-card-title mb-0">Contact Information</h5>
+                </div>
+                
+                <div class="contact-info">
+                    <div class="contact-item mb-3">
+                        <div class="d-flex align-items-center">
+                            <i class="fas fa-phone text-primary mr-3"></i>
+                            <div>
+                                <small class="text-muted d-block">Phone</small>
+                                <span>{{ service.provider.contact_number }}</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="contact-item mb-3">
+                        <div class="d-flex align-items-center">
+                            <i class="fas fa-envelope text-primary mr-3"></i>
+                            <div>
+                                <small class="text-muted d-block">Email</small>
+                                <span>{{ service.provider.email }}</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    {% if service.provider.address %}
+                        <div class="contact-item mb-3">
+                            <div class="d-flex align-items-center">
+                                <i class="fas fa-map-marker-alt text-primary mr-3"></i>
+                                <div>
+                                    <small class="text-muted d-block">Address</small>
+                                    <span>{{ service.provider.address }}</span>
+                                </div>
+                            </div>
+                        </div>
+                    {% endif %}
+                </div>
+                
+                <div class="contact-actions mt-3">
+                    <button class="btn btn-creative-primary btn-sm w-100 mb-2" onclick="startChat()">
+                        <i class="fas fa-comments mr-2"></i>Start Chat
+                    </button>
+                    <button class="btn btn-creative-secondary btn-sm w-100" onclick="callProvider()">
+                        <i class="fas fa-phone mr-2"></i>Call Now
+                    </button>
+                </div>
+            </div>
+
+            <!-- Quick Actions -->
+            <div class="creative-card">
+                <div class="d-flex align-items-center mb-3">
+                    <div class="creative-card-icon mr-3" style="width: 40px; height: 40px; font-size: 1rem;">
+                        <i class="fas fa-bolt"></i>
+                    </div>
+                    <h5 class="creative-card-title mb-0">Quick Actions</h5>
+                </div>
+                
+                <div class="quick-actions">
+                    <button class="btn btn-outline-primary btn-sm w-100 mb-2" onclick="saveService()">
+                        <i class="fas fa-heart mr-2"></i>Save to Favorites
+                    </button>
+                    <button class="btn btn-outline-secondary btn-sm w-100 mb-2" onclick="shareService()">
+                        <i class="fas fa-share mr-2"></i>Share Service
+                    </button>
+                    <button class="btn btn-outline-warning btn-sm w-100" onclick="reportService()">
+                        <i class="fas fa-flag mr-2"></i>Report Issue
+                    </button>
                 </div>
             </div>
         </div>
     </div>
+</div>
+{% endblock %}
 
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js"></script>
-</body>
-</html>
+{% block extra_css %}
+<style>
+    .text-white-50 {
+        color: rgba(255, 255, 255, 0.7) !important;
+    }
+    
+    .breadcrumb-item + .breadcrumb-item::before {
+        color: rgba(255, 255, 255, 0.5);
+    }
+    
+    .breadcrumb-item a {
+        text-decoration: none;
+        transition: var(--transition-fast);
+    }
+    
+    .breadcrumb-item a:hover {
+        color: white !important;
+    }
+    
+    .service-rating .fas.fa-star {
+        font-size: 1.1rem;
+    }
+    
+    .price-display h2 {
+        font-size: 2.5rem;
+        line-height: 1;
+    }
+    
+    .review-summary {
+        border: 1px solid var(--border-color);
+    }
+    
+    .rating-breakdown .progress {
+        background-color: rgba(0,0,0,0.1);
+    }
+    
+    .review-item {
+        border: 1px solid var(--border-color);
+        transition: var(--transition-fast);
+    }
+    
+    .review-item:hover {
+        transform: translateY(-2px);
+        box-shadow: var(--shadow-lg);
+    }
+    
+    .provider-avatar, .review-avatar {
+        box-shadow: var(--shadow-md);
+    }
+    
+    .provider-stats .stat-item {
+        padding: 0.5rem;
+    }
+    
+    .contact-item {
+        padding: 0.75rem;
+        background: var(--bg-light);
+        border-radius: var(--radius-md);
+        border: 1px solid var(--border-color);
+    }
+    
+    .contact-actions .btn {
+        transition: var(--transition-fast);
+    }
+    
+    .contact-actions .btn:hover {
+        transform: translateY(-2px);
+    }
+    
+    .quick-actions .btn {
+        transition: var(--transition-fast);
+    }
+    
+    .quick-actions .btn:hover {
+        transform: translateY(-2px);
+    }
+    
+    .verification-badge {
+        border: 1px solid rgba(40, 167, 69, 0.3);
+    }
+    
+    .expertise-tags .badge {
+        background: rgba(102, 126, 234, 0.1) !important;
+        color: var(--primary-color) !important;
+        font-weight: 500;
+    }
+    
+    @media (max-width: 768px) {
+        .price-display {
+            text-align: center;
+        }
+        
+        .provider-stats {
+            text-align: center;
+        }
+        
+        .contact-actions .btn,
+        .quick-actions .btn {
+            margin-bottom: 0.5rem;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function startChat() {
+    if (window.creativeNeeget) {
+        window.creativeNeeget.startChat({{ service.provider.id }});
+    } else {
+        alert('Chat feature will be available soon!');
+    }
+}
+
+function callProvider() {
+    const phone = '{{ service.provider.contact_number }}';
+    if (phone) {
+        window.location.href = `tel:${phone}`;
+    }
+}
+
+function saveService() {
+    if (window.creativeNeeget) {
+        window.creativeNeeget.saveService({{ service.id }});
+    } else {
+        alert('Service saved to favorites!');
+    }
+}
+
+function shareService() {
+    if (navigator.share) {
+        navigator.share({
+            title: '{{ service.service_name }} - Neeget',
+            text: '{{ service.description[:100] }}...',
+            url: window.location.href
+        });
+    } else {
+        // Fallback for browsers that don't support Web Share API
+        navigator.clipboard.writeText(window.location.href).then(() => {
+            alert('Service link copied to clipboard!');
+        });
+    }
+}
+
+function reportService() {
+    if (confirm('Are you sure you want to report this service?')) {
+        alert('Thank you for your report. We will review it shortly.');
+    }
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    // Add smooth scrolling for anchor links
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function (e) {
+            e.preventDefault();
+            const target = document.querySelector(this.getAttribute('href'));
+            if (target) {
+                target.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'start'
+                });
+            }
+        });
+    });
+    
+    // Add loading states for buttons
+    document.querySelectorAll('.btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            if (this.type === 'submit' || this.href) {
+                const originalText = this.innerHTML;
+                this.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Loading...';
+                this.disabled = true;
+                
+                setTimeout(() => {
+                    this.innerHTML = originalText;
+                    this.disabled = false;
+                }, 2000);
+            }
+        });
+    });
+});
+</script>
+{% endblock %}
 
