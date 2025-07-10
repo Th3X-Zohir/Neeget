@@ -1,228 +1,477 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Edit Profile - Neeget</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
-</head>
-<body>
-    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
-        <div class="container">
-            <a class="navbar-brand" href="{{ url_for('index') }}">
-                <i class="fas fa-handshake"></i> Neeget
-            </a>
-            <div class="navbar-nav ml-auto">
-                <a class="nav-link" href="{{ url_for('profile.view') }}">
-                    <i class="fas fa-arrow-left"></i> Back to Profile
-                </a>
-                <a class="nav-link" href="{{ url_for('auth.logout') }}">
-                    <i class="fas fa-user"></i> {{ g.user.name }} | Logout
+{% extends "base.html" %}
+
+{% block title %}Edit Profile - Neeget{% endblock %}
+
+{% block mobile_title %}Edit Profile{% endblock %}
+
+{% block content %}
+<!-- Edit Profile Hero Section -->
+<section class="py-4" style="background: var(--secondary-gradient); margin-top: -80px; padding-top: 100px;">
+    <div class="container">
+        <nav aria-label="breadcrumb" class="mb-3">
+            <ol class="breadcrumb bg-transparent p-0 mb-0">
+                <li class="breadcrumb-item">
+                    <a href="{{ url_for('index') }}" class="text-white-50">
+                        <i class="fas fa-home mr-1"></i>Home
+                    </a>
+                </li>
+                <li class="breadcrumb-item">
+                    <a href="{{ url_for('profile.view') }}" class="text-white-50">Profile</a>
+                </li>
+                <li class="breadcrumb-item active text-white">Edit Profile</li>
+            </ol>
+        </nav>
+        
+        <div class="row align-items-center">
+            <div class="col-lg-8">
+                <div class="d-flex align-items-center">
+                    <div class="creative-card-icon mr-3" style="width: 60px; height: 60px; font-size: 1.5rem; background: rgba(255,255,255,0.2);">
+                        <i class="fas fa-user-edit"></i>
+                    </div>
+                    <div>
+                        <h1 class="text-white font-weight-bold mb-1">Edit Your Profile</h1>
+                        <p class="text-white-50 mb-0">Update your personal and professional information</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4 mt-3 mt-lg-0 text-lg-right">
+                <a href="{{ url_for('profile.view') }}" class="btn btn-light btn-lg px-4">
+                    <i class="fas fa-arrow-left mr-2"></i>Back to Profile
                 </a>
             </div>
         </div>
-    </nav>
+    </div>
+</section>
 
-    <div class="container mt-4">
-        <div class="row justify-content-center">
-            <div class="col-md-8">
-                <div class="card">
-                    <div class="card-header">
-                        <h4><i class="fas fa-user-edit"></i> Edit Profile</h4>
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                        <div class="alert alert-{{ 'danger' if category == 'error' else 'success' }} alert-dismissible fade show" role="alert">
+                            <i class="fas fa-{{ 'exclamation-triangle' if category == 'error' else 'check-circle' }} mr-2"></i>
+                            {{ message }}
+                            <button type="button" class="close" data-dismiss="alert">
+                                <span>&times;</span>
+                            </button>
+                        </div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+
+            <form method="POST" class="creative-form">
+                {{ form.hidden_tag() }}
+                
+                <!-- Personal Information Section -->
+                <div class="creative-card mb-4">
+                    <div class="d-flex align-items-center mb-4">
+                        <div class="creative-card-icon mr-3" style="width: 40px; height: 40px; font-size: 1rem;">
+                            <i class="fas fa-user"></i>
+                        </div>
+                        <h3 class="creative-card-title mb-0">Personal Information</h3>
                     </div>
-                    <div class="card-body">
-                        {% with messages = get_flashed_messages(with_categories=true) %}
-                            {% if messages %}
-                                {% for category, message in messages %}
-                                    <div class="alert alert-{{ 'danger' if category == 'error' else category }} alert-dismissible fade show">
-                                        {{ message }}
-                                        <button type="button" class="close" data-dismiss="alert">
-                                            <span>&times;</span>
-                                        </button>
-                                    </div>
-                                {% endfor %}
-                            {% endif %}
-                        {% endwith %}
-
-                        <form method="POST">
-                            {{ form.hidden_tag() }}
-                            
-                            <!-- Basic Information -->
-                            <h5 class="mb-3"><i class="fas fa-info-circle"></i> Basic Information</h5>
-                            
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        {{ form.name.label(class="form-label") }}
-                                        {{ form.name(class="form-control") }}
-                                        {% if form.name.errors %}
-                                            <div class="text-danger">
-                                                {% for error in form.name.errors %}
-                                                    <small>{{ error }}</small>
-                                                {% endfor %}
-                                            </div>
-                                        {% endif %}
-                                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="creative-form-group">
+                                {{ form.name.label(class="creative-form-label") }}
+                                <div class="position-relative">
+                                    <i class="fas fa-user position-absolute" style="left: 15px; top: 50%; transform: translateY(-50%); color: var(--text-light); z-index: 2;"></i>
+                                    {{ form.name(class="creative-form-control", style="padding-left: 45px;") }}
                                 </div>
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        {{ form.contact_number.label(class="form-label") }}
-                                        {{ form.contact_number(class="form-control") }}
-                                        {% if form.contact_number.errors %}
-                                            <div class="text-danger">
-                                                {% for error in form.contact_number.errors %}
-                                                    <small>{{ error }}</small>
-                                                {% endfor %}
-                                            </div>
-                                        {% endif %}
+                                {% if form.name.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {% for error in form.name.errors %}
+                                            <small>{{ error }}</small>
+                                        {% endfor %}
                                     </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="creative-form-group">
+                                {{ form.email.label(class="creative-form-label") }}
+                                <div class="position-relative">
+                                    <i class="fas fa-envelope position-absolute" style="left: 15px; top: 50%; transform: translateY(-50%); color: var(--text-light); z-index: 2;"></i>
+                                    {{ form.email(class="creative-form-control", style="padding-left: 45px;") }}
+                                </div>
+                                {% if form.email.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {% for error in form.email.errors %}
+                                            <small>{{ error }}</small>
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="creative-form-group">
+                                {{ form.contact_number.label(class="creative-form-label") }}
+                                <div class="position-relative">
+                                    <i class="fas fa-phone position-absolute" style="left: 15px; top: 50%; transform: translateY(-50%); color: var(--text-light); z-index: 2;"></i>
+                                    {{ form.contact_number(class="creative-form-control", style="padding-left: 45px;") }}
+                                </div>
+                                {% if form.contact_number.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {% for error in form.contact_number.errors %}
+                                            <small>{{ error }}</small>
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="creative-form-group">
+                                <label class="creative-form-label">Account Type</label>
+                                <div class="position-relative">
+                                    <i class="fas fa-user-tag position-absolute" style="left: 15px; top: 50%; transform: translateY(-50%); color: var(--text-light); z-index: 2;"></i>
+                                    <input type="text" class="creative-form-control" style="padding-left: 45px;" value="{{ g.user.role.replace('_', ' ').title() }}" readonly>
                                 </div>
                             </div>
-
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        {{ form.age.label(class="form-label") }}
-                                        {{ form.age(class="form-control") }}
-                                        {% if form.age.errors %}
-                                            <div class="text-danger">
-                                                {% for error in form.age.errors %}
-                                                    <small>{{ error }}</small>
-                                                {% endfor %}
-                                            </div>
-                                        {% endif %}
-                                    </div>
+                        </div>
+                        <div class="col-12">
+                            <div class="creative-form-group">
+                                {{ form.address.label(class="creative-form-label") }}
+                                <div class="position-relative">
+                                    <i class="fas fa-map-marker-alt position-absolute" style="left: 15px; top: 20px; color: var(--text-light); z-index: 2;"></i>
+                                    {{ form.address(class="creative-form-control", style="padding-left: 45px; min-height: 80px;") }}
                                 </div>
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        {{ form.profession.label(class="form-label") }}
-                                        {{ form.profession(class="form-control") }}
-                                        {% if form.profession.errors %}
-                                            <div class="text-danger">
-                                                {% for error in form.profession.errors %}
-                                                    <small>{{ error }}</small>
-                                                {% endfor %}
-                                            </div>
-                                        {% endif %}
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="form-group">
-                                {{ form.address.label(class="form-label") }}
-                                {{ form.address(class="form-control", rows="3") }}
                                 {% if form.address.errors %}
-                                    <div class="text-danger">
+                                    <div class="invalid-feedback d-block">
                                         {% for error in form.address.errors %}
                                             <small>{{ error }}</small>
                                         {% endfor %}
                                     </div>
                                 {% endif %}
                             </div>
-
-                            {% if g.user.role == 'service_provider' %}
-                                <hr>
-                                <!-- Professional Information (Service Providers Only) -->
-                                <h5 class="mb-3"><i class="fas fa-briefcase"></i> Professional Information</h5>
-                                
-                                <div class="form-group">
-                                    {{ form.professional_description.label(class="form-label") }}
-                                    {{ form.professional_description(class="form-control", rows="4", placeholder="Describe your professional background and experience...") }}
-                                    {% if form.professional_description.errors %}
-                                        <div class="text-danger">
-                                            {% for error in form.professional_description.errors %}
-                                                <small>{{ error }}</small>
-                                            {% endfor %}
-                                        </div>
-                                    {% endif %}
-                                </div>
-
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <div class="form-group">
-                                            {{ form.expertise.label(class="form-label") }}
-                                            {{ form.expertise(class="form-control", placeholder="e.g., Plumbing, Electrical, Cleaning") }}
-                                            {% if form.expertise.errors %}
-                                                <div class="text-danger">
-                                                    {% for error in form.expertise.errors %}
-                                                        <small>{{ error }}</small>
-                                                    {% endfor %}
-                                                </div>
-                                            {% endif %}
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="form-group">
-                                            {{ form.preferred_locations.label(class="form-label") }}
-                                            {{ form.preferred_locations(class="form-control", placeholder="e.g., Dhaka, Chittagong") }}
-                                            {% if form.preferred_locations.errors %}
-                                                <div class="text-danger">
-                                                    {% for error in form.preferred_locations.errors %}
-                                                        <small>{{ error }}</small>
-                                                    {% endfor %}
-                                                </div>
-                                            {% endif %}
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="form-group">
-                                    {{ form.portfolio_url.label(class="form-label") }}
-                                    {{ form.portfolio_url(class="form-control", placeholder="https://your-portfolio.com") }}
-                                    {% if form.portfolio_url.errors %}
-                                        <div class="text-danger">
-                                            {% for error in form.portfolio_url.errors %}
-                                                <small>{{ error }}</small>
-                                            {% endfor %}
-                                        </div>
-                                    {% endif %}
-                                </div>
-                            {% endif %}
-
-                            <div class="form-group mt-4">
-                                <button type="submit" class="btn btn-primary btn-lg">
-                                    <i class="fas fa-save"></i> Update Profile
-                                </button>
-                                <a href="{{ url_for('profile.view') }}" class="btn btn-secondary btn-lg">
-                                    <i class="fas fa-times"></i> Cancel
-                                </a>
-                            </div>
-                        </form>
+                        </div>
                     </div>
                 </div>
 
-                <!-- Account Settings -->
-                <div class="card mt-3">
-                    <div class="card-header">
-                        <h5><i class="fas fa-cog"></i> Account Settings</h5>
+                <!-- Professional Information Section (for providers) -->
+                {% if g.user.role == 'provider' %}
+                <div class="creative-card mb-4">
+                    <div class="d-flex align-items-center mb-4">
+                        <div class="creative-card-icon mr-3" style="width: 40px; height: 40px; font-size: 1rem;">
+                            <i class="fas fa-briefcase"></i>
+                        </div>
+                        <h3 class="creative-card-title mb-0">Professional Information</h3>
                     </div>
-                    <div class="card-body">
-                        <div class="row">
-                            <div class="col-md-6">
-                                <h6>Security</h6>
-                                <p class="text-muted">Manage your account security settings.</p>
-                                <a href="{{ url_for('profile.change_password') }}" class="btn btn-outline-primary">
-                                    <i class="fas fa-key"></i> Change Password
-                                </a>
+                    
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="creative-form-group">
+                                {{ form.profession.label(class="creative-form-label") }}
+                                <div class="position-relative">
+                                    <i class="fas fa-briefcase position-absolute" style="left: 15px; top: 50%; transform: translateY(-50%); color: var(--text-light); z-index: 2;"></i>
+                                    {{ form.profession(class="creative-form-control", style="padding-left: 45px;") }}
+                                </div>
+                                {% if form.profession.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {% for error in form.profession.errors %}
+                                            <small>{{ error }}</small>
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
                             </div>
-                            <div class="col-md-6">
-                                <h6>Support</h6>
-                                <p class="text-muted">Need help? Contact our support team.</p>
-                                <a href="{{ url_for('profile.support') }}" class="btn btn-outline-info">
-                                    <i class="fas fa-life-ring"></i> Get Support
-                                </a>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="creative-form-group">
+                                {{ form.experience.label(class="creative-form-label") }}
+                                <div class="position-relative">
+                                    <i class="fas fa-clock position-absolute" style="left: 15px; top: 50%; transform: translateY(-50%); color: var(--text-light); z-index: 2;"></i>
+                                    {{ form.experience(class="creative-form-control", style="padding-left: 45px;") }}
+                                </div>
+                                {% if form.experience.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {% for error in form.experience.errors %}
+                                            <small>{{ error }}</small>
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <div class="creative-form-group">
+                                {{ form.expertise.label(class="creative-form-label") }}
+                                <div class="position-relative">
+                                    <i class="fas fa-star position-absolute" style="left: 15px; top: 50%; transform: translateY(-50%); color: var(--text-light); z-index: 2;"></i>
+                                    {{ form.expertise(class="creative-form-control", style="padding-left: 45px;", placeholder="e.g., Web Development, Mobile Apps, UI/UX Design (comma separated)") }}
+                                </div>
+                                {% if form.expertise.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {% for error in form.expertise.errors %}
+                                            <small>{{ error }}</small>
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <div class="creative-form-group">
+                                {{ form.professional_description.label(class="creative-form-label") }}
+                                <div class="position-relative">
+                                    <i class="fas fa-comment position-absolute" style="left: 15px; top: 20px; color: var(--text-light); z-index: 2;"></i>
+                                    {{ form.professional_description(class="creative-form-control", style="padding-left: 45px; min-height: 120px;", placeholder="Describe your professional background, experience, and what makes you unique...") }}
+                                </div>
+                                {% if form.professional_description.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {% for error in form.professional_description.errors %}
+                                            <small>{{ error }}</small>
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="creative-form-group">
+                                {{ form.preferred_locations.label(class="creative-form-label") }}
+                                <div class="position-relative">
+                                    <i class="fas fa-map position-absolute" style="left: 15px; top: 50%; transform: translateY(-50%); color: var(--text-light); z-index: 2;"></i>
+                                    {{ form.preferred_locations(class="creative-form-control", style="padding-left: 45px;", placeholder="e.g., New York, Brooklyn, Manhattan") }}
+                                </div>
+                                {% if form.preferred_locations.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {% for error in form.preferred_locations.errors %}
+                                            <small>{{ error }}</small>
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="creative-form-group">
+                                {{ form.portfolio_url.label(class="creative-form-label") }}
+                                <div class="position-relative">
+                                    <i class="fas fa-link position-absolute" style="left: 15px; top: 50%; transform: translateY(-50%); color: var(--text-light); z-index: 2;"></i>
+                                    {{ form.portfolio_url(class="creative-form-control", style="padding-left: 45px;", placeholder="https://your-portfolio.com") }}
+                                </div>
+                                {% if form.portfolio_url.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {% for error in form.portfolio_url.errors %}
+                                            <small>{{ error }}</small>
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
+                {% endif %}
+
+                <!-- Account Preferences Section -->
+                <div class="creative-card mb-4">
+                    <div class="d-flex align-items-center mb-4">
+                        <div class="creative-card-icon mr-3" style="width: 40px; height: 40px; font-size: 1rem;">
+                            <i class="fas fa-cog"></i>
+                        </div>
+                        <h3 class="creative-card-title mb-0">Account Preferences</h3>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="creative-form-group">
+                                <label class="creative-form-label">Email Notifications</label>
+                                <div class="custom-control custom-switch">
+                                    <input type="checkbox" class="custom-control-input" id="emailNotifications" checked>
+                                    <label class="custom-control-label" for="emailNotifications">
+                                        Receive email notifications for bookings and updates
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="creative-form-group">
+                                <label class="creative-form-label">SMS Notifications</label>
+                                <div class="custom-control custom-switch">
+                                    <input type="checkbox" class="custom-control-input" id="smsNotifications">
+                                    <label class="custom-control-label" for="smsNotifications">
+                                        Receive SMS notifications for urgent updates
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="creative-form-group">
+                                <label class="creative-form-label">Marketing Emails</label>
+                                <div class="custom-control custom-switch">
+                                    <input type="checkbox" class="custom-control-input" id="marketingEmails">
+                                    <label class="custom-control-label" for="marketingEmails">
+                                        Receive promotional emails and newsletters
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="creative-form-group">
+                                <label class="creative-form-label">Profile Visibility</label>
+                                <div class="custom-control custom-switch">
+                                    <input type="checkbox" class="custom-control-input" id="profileVisibility" checked>
+                                    <label class="custom-control-label" for="profileVisibility">
+                                        Make my profile visible to other users
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Form Actions -->
+                <div class="form-actions">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <a href="{{ url_for('profile.view') }}" class="btn btn-creative-secondary">
+                            <i class="fas fa-times mr-2"></i>Cancel
+                        </a>
+                        <div>
+                            <button type="button" class="btn btn-outline-primary mr-2" onclick="previewChanges()">
+                                <i class="fas fa-eye mr-2"></i>Preview Changes
+                            </button>
+                            <button type="submit" class="btn btn-creative-primary btn-lg">
+                                <i class="fas fa-save mr-2"></i>Save Changes
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </form>
         </div>
     </div>
+</div>
+{% endblock %}
 
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js"></script>
-</body>
-</html>
+{% block extra_css %}
+<style>
+    .text-white-50 {
+        color: rgba(255, 255, 255, 0.7) !important;
+    }
+    
+    .breadcrumb-item + .breadcrumb-item::before {
+        color: rgba(255, 255, 255, 0.5);
+    }
+    
+    .breadcrumb-item a {
+        text-decoration: none;
+        transition: var(--transition-fast);
+    }
+    
+    .breadcrumb-item a:hover {
+        color: white !important;
+    }
+    
+    .custom-control-label {
+        font-weight: 500;
+        cursor: pointer;
+        padding-left: 0.5rem;
+    }
+    
+    .custom-switch .custom-control-input:checked ~ .custom-control-label::before {
+        background: var(--primary-gradient);
+        border-color: var(--primary-color);
+    }
+    
+    .form-actions {
+        padding: 2rem;
+        background: var(--bg-light);
+        border-radius: var(--radius-lg);
+        border: 1px solid var(--border-color);
+        margin-top: 2rem;
+    }
+    
+    .form-actions .btn {
+        transition: var(--transition-fast);
+    }
+    
+    .form-actions .btn:hover {
+        transform: translateY(-2px);
+    }
+    
+    @media (max-width: 768px) {
+        .form-actions .d-flex {
+            flex-direction: column;
+        }
+        
+        .form-actions .btn {
+            width: 100%;
+            margin-bottom: 0.5rem;
+        }
+        
+        .form-actions .btn:last-child {
+            margin-bottom: 0;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function previewChanges() {
+    // Create a preview modal or redirect to preview page
+    alert('Preview functionality will be available soon!');
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    // Auto-resize textareas
+    const textareas = document.querySelectorAll('textarea');
+    textareas.forEach(textarea => {
+        textarea.addEventListener('input', function() {
+            this.style.height = 'auto';
+            this.style.height = this.scrollHeight + 'px';
+        });
+        
+        // Initial resize
+        textarea.style.height = textarea.scrollHeight + 'px';
+    });
+    
+    // Form validation
+    const form = document.querySelector('.creative-form');
+    if (form) {
+        form.addEventListener('submit', function(e) {
+            let isValid = true;
+            const requiredFields = ['name', 'email'];
+            
+            requiredFields.forEach(fieldName => {
+                const field = document.getElementById(fieldName);
+                if (field && !field.value.trim()) {
+                    isValid = false;
+                    field.classList.add('is-invalid');
+                } else if (field) {
+                    field.classList.remove('is-invalid');
+                }
+            });
+            
+            // Email validation
+            const emailField = document.getElementById('email');
+            if (emailField && emailField.value) {
+                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                if (!emailRegex.test(emailField.value)) {
+                    isValid = false;
+                    emailField.classList.add('is-invalid');
+                }
+            }
+            
+            if (!isValid) {
+                e.preventDefault();
+                alert('Please fill in all required fields correctly.');
+            }
+        });
+    }
+    
+    // Add loading states for buttons
+    document.querySelectorAll('.btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            if (this.type === 'submit') {
+                const originalText = this.innerHTML;
+                this.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Saving...';
+                this.disabled = true;
+                
+                setTimeout(() => {
+                    this.innerHTML = originalText;
+                    this.disabled = false;
+                }, 3000);
+            }
+        });
+    });
+});
+</script>
+{% endblock %}
 

@@ -209,36 +209,14 @@
                 <div class="provider-info">
                     <div class="d-flex align-items-center mb-3">
                         <div class="provider-avatar mr-3" style="width: 60px; height: 60px; background: var(--secondary-gradient); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 1.5rem; font-weight: bold;">
-                            {{ service.provider.name[0] }}
+                            {{ service.provider_name[0] }}
                         </div>
                         <div>
-                            <h6 class="mb-1">{{ service.provider.name }}</h6>
-                            <p class="text-muted mb-0">{{ service.provider.profession or 'Service Provider' }}</p>
+                            <h6 class="mb-1">{{ service.provider_name }}</h6>
+                            <p class="text-muted mb-0">Service Provider</p>
                         </div>
                     </div>
                     
-                    {% if service.provider.professional_description %}
-                        <p class="mb-3">{{ service.provider.professional_description }}</p>
-                    {% endif %}
-
-                    {% if service.provider.expertise %}
-                        <div class="mb-3">
-                            <h6 class="font-weight-bold mb-2">Expertise</h6>
-                            <div class="expertise-tags">
-                                {% for skill in service.provider.expertise.split(',') %}
-                                    <span class="badge badge-light mr-1 mb-1">{{ skill.strip() }}</span>
-                                {% endfor %}
-                            </div>
-                        </div>
-                    {% endif %}
-
-                    {% if service.provider.preferred_locations %}
-                        <div class="mb-3">
-                            <h6 class="font-weight-bold mb-2">Service Areas</h6>
-                            <p class="text-muted mb-0">{{ service.provider.preferred_locations }}</p>
-                        </div>
-                    {% endif %}
-
                     <div class="provider-stats mb-3">
                         <div class="row text-center">
                             <div class="col-4">
@@ -261,13 +239,6 @@
                             </div>
                         </div>
                     </div>
-
-                    {% if service.provider.portfolio_url %}
-                        <a href="{{ service.provider.portfolio_url }}" target="_blank" class="btn btn-creative-secondary btn-sm w-100 mb-3">
-                            <i class="fas fa-external-link-alt mr-2"></i>View Portfolio
-                        </a>
-                    {% endif %}
-
                     <div class="verification-badge text-center p-3" style="background: rgba(40, 167, 69, 0.1); border-radius: var(--radius-lg);">
                         <i class="fas fa-shield-alt text-success mb-2" style="font-size: 1.5rem;"></i>
                         <p class="text-success font-weight-bold mb-0">Verified Provider</p>
@@ -291,7 +262,7 @@
                             <i class="fas fa-phone text-primary mr-3"></i>
                             <div>
                                 <small class="text-muted d-block">Phone</small>
-                                <span>{{ service.provider.contact_number }}</span>
+                                <span>{{ service.contact_number or 'Not provided' }}</span>
                             </div>
                         </div>
                     </div>
@@ -301,22 +272,20 @@
                             <i class="fas fa-envelope text-primary mr-3"></i>
                             <div>
                                 <small class="text-muted d-block">Email</small>
-                                <span>{{ service.provider.email }}</span>
+                                <span>{{ service.provider_email or 'Not provided' }}</span>
                             </div>
                         </div>
                     </div>
                     
-                    {% if service.provider.address %}
-                        <div class="contact-item mb-3">
-                            <div class="d-flex align-items-center">
-                                <i class="fas fa-map-marker-alt text-primary mr-3"></i>
-                                <div>
-                                    <small class="text-muted d-block">Address</small>
-                                    <span>{{ service.provider.address }}</span>
-                                </div>
+                    <div class="contact-item mb-3">
+                        <div class="d-flex align-items-center">
+                            <i class="fas fa-map-marker-alt text-primary mr-3"></i>
+                            <div>
+                                <small class="text-muted d-block">Service Area</small>
+                                <span>{{ service.location or 'Location flexible' }}</span>
                             </div>
                         </div>
-                    {% endif %}
+                    </div>
                 </div>
                 
                 <div class="contact-actions mt-3">
@@ -463,14 +432,14 @@
 <script>
 function startChat() {
     if (window.creativeNeeget) {
-        window.creativeNeeget.startChat({{ service.provider.id }});
+        window.creativeNeeget.startChat({{ service.provider_id }});
     } else {
         alert('Chat feature will be available soon!');
     }
 }
 
 function callProvider() {
-    const phone = '{{ service.provider.contact_number }}';
+    const phone = '{{ service.contact_number }}';
     if (phone) {
         window.location.href = `tel:${phone}`;
     }
