@@ -1,0 +1,48 @@
+[
+    {
+        "id": 1,
+        "category_id": 1,
+        "provider_id": 3,
+        "service_name": "Deep House Cleaning",
+        "description": "Complete deep cleaning service including all rooms, bathrooms, kitchen, and common areas. Includes dusting, vacuuming, mopping, and sanitizing.",
+        "price": 150.00,
+        "location": "Downtown, Midtown"
+    },
+    {
+        "id": 2,
+        "category_id": 1,
+        "provider_id": 3,
+        "service_name": "Regular House Maintenance",
+        "description": "Weekly or bi-weekly house cleaning service to maintain cleanliness and hygiene.",
+        "price": 80.00,
+        "location": "Downtown, Midtown, Suburbs"
+    },
+    {
+        "id": 3,
+        "category_id": 2,
+        "provider_id": 4,
+        "service_name": "Emergency Plumbing Repair",
+        "description": "24/7 emergency plumbing services for leaks, clogs, and pipe bursts.",
+        "price": 120.00,
+        "location": "City-wide"
+    },
+    {
+        "id": 4,
+        "category_id": 2,
+        "provider_id": 4,
+        "service_name": "Bathroom Installation",
+        "description": "Complete bathroom plumbing installation including fixtures, pipes, and connections.",
+        "price": 500.00,
+        "location": "City-wide"
+    },
+    {
+        "id": 5,
+        "category_id": 3,
+        "provider_id": 4,
+        "service_name": "Basic Electrical Repair",
+        "description": "Basic electrical repairs including outlet installation, switch replacement, and light fixture installation.",
+        "price": 75.00,
+        "location": "Downtown, Midtown"
+    }
+]
+

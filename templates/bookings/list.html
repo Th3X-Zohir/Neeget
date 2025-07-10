@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Bookings - Neeget</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container">
+            <a class="navbar-brand" href="{{ url_for('index') }}">
+                <i class="fas fa-handshake"></i> Neeget
+            </a>
+            <div class="navbar-nav ml-auto">
+                <a class="nav-link" href="{{ url_for('auth.logout') }}">
+                    <i class="fas fa-user"></i> {{ g.user.name }} | Logout
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2>
+                <i class="fas fa-calendar-alt"></i> 
+                {% if g.user.role == 'service_provider' %}
+                    Booking Requests
+                {% else %}
+                    My Bookings
+                {% endif %}
+            </h2>
+            <a href="{{ url_for('services.browse') }}" class="btn btn-primary">
+                <i class="fas fa-plus"></i> Book New Service
+            </a>
+        </div>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ 'danger' if category == 'error' else 'success' }} alert-dismissible fade show" role="alert">
+                        {{ message }}
+                        <button type="button" class="close" data-dismiss="alert">
+                            <span>&times;</span>
+                        </button>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        {% if bookings %}
+            <div class="row">
+                {% for booking in bookings %}
+                    <div class="col-md-6 col-lg-4 mb-4">
+                        <div class="card h-100">
+                            <div class="card-header d-flex justify-content-between align-items-center">
+                                <h6 class="mb-0">{{ booking.service.service_name if booking.service else 'Unknown Service' }}</h6>
+                                <span class="badge badge-{% if booking.booking_status == 'pending' %}warning{% elif booking.booking_status == 'accepted' %}info{% elif booking.booking_status == 'completed' %}success{% elif booking.booking_status == 'rejected' %}danger{% else %}secondary{% endif %}">
+                                    {{ booking.booking_status.title() }}
+                                </span>
+                            </div>
+                            <div class="card-body">
+                                {% if g.user.role == 'service_provider' %}
+                                    <p><strong>Customer:</strong> {{ booking.user.name if booking.user else 'Unknown' }}</p>
+                                    <p><strong>Contact:</strong> {{ booking.user.contact_number if booking.user else 'N/A' }}</p>
+                                {% else %}
+                                    <p><strong>Provider:</strong> {{ booking.provider.name if booking.provider else 'Unknown' }}</p>
+                                    <p><strong>Contact:</strong> {{ booking.provider.contact_number if booking.provider else 'N/A' }}</p>
+                                {% endif %}
+                                
+                                <p><strong>Service Date:</strong> {{ booking.service_date[:16].replace('T', ' ') if booking.service_date else 'Not set' }}</p>
+                                <p><strong>Booking Date:</strong> {{ booking.booking_date[:10] if booking.booking_date else 'Unknown' }}</p>
+                                
+                                {% if booking.service %}
+                                    <p><strong>Price:</strong> ${{ "%.2f"|format(booking.service.price) }}</p>
+                                {% endif %}
+                            </div>
+                            <div class="card-footer">
+                                <div class="btn-group btn-group-sm w-100" role="group">
+                                    <a href="{{ url_for('bookings.detail', booking_id=booking.id) }}" class="btn btn-outline-primary">
+                                        <i class="fas fa-eye"></i> Details
+                                    </a>
+                                    
+                                    {% if g.user.role == 'service_provider' %}
+                                        {% if booking.booking_status == 'pending' %}
+                                            <form method="post" action="{{ url_for('bookings.accept_booking', booking_id=booking.id) }}" class="d-inline">
+                                                <button type="submit" class="btn btn-success btn-sm">
+                                                    <i class="fas fa-check"></i> Accept
+                                                </button>
+                                            </form>
+                                            <form method="post" action="{{ url_for('bookings.reject_booking', booking_id=booking.id) }}" class="d-inline">
+                                                <button type="submit" class="btn btn-danger btn-sm">
+                                                    <i class="fas fa-times"></i> Reject
+                                                </button>
+                                            </form>
+                                        {% elif booking.booking_status == 'accepted' %}
+                                            <form method="post" action="{{ url_for('bookings.complete_booking', booking_id=booking.id) }}" class="d-inline">
+                                                <button type="submit" class="btn btn-success btn-sm">
+                                                    <i class="fas fa-check-circle"></i> Complete
+                                                </button>
+                                            </form>
+                                        {% endif %}
+                                    {% else %}
+                                        {% if booking.booking_status in ['pending', 'accepted'] %}
+                                            <form method="post" action="{{ url_for('bookings.cancel_booking', booking_id=booking.id) }}" class="d-inline">
+                                                <button type="submit" class="btn btn-warning btn-sm" onclick="return confirm('Are you sure you want to cancel this booking?')">
+                                                    <i class="fas fa-ban"></i> Cancel
+                                                </button>
+                                            </form>
+                                        {% endif %}
+                                        {% if booking.booking_status == 'completed' %}
+                                            <a href="{{ url_for('bookings.review_booking', booking_id=booking.id) }}" class="btn btn-info btn-sm">
+                                                <i class="fas fa-star"></i> Review
+                                            </a>
+                                        {% endif %}
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="text-center py-5">
+                <i class="fas fa-calendar-times fa-3x text-muted mb-3"></i>
+                <h4>No bookings found</h4>
+                {% if g.user.role == 'service_provider' %}
+                    <p class="text-muted">You haven't received any booking requests yet.</p>
+                    <a href="{{ url_for('services.manage') }}" class="btn btn-primary">
+                        <i class="fas fa-plus"></i> Add Your Services
+                    </a>
+                {% else %}
+                    <p class="text-muted">You haven't made any bookings yet.</p>
+                    <a href="{{ url_for('services.browse') }}" class="btn btn-primary">
+                        <i class="fas fa-search"></i> Browse Services
+                    </a>
+                {% endif %}
+            </div>
+        {% endif %}
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
+

@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Profile - Neeget</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container">
+            <a class="navbar-brand" href="{{ url_for('index') }}">
+                <i class="fas fa-handshake"></i> Neeget
+            </a>
+            <div class="navbar-nav ml-auto">
+                <a class="nav-link" href="{{ url_for('auth.logout') }}">
+                    <i class="fas fa-user"></i> {{ g.user.name }} | Logout
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+        <div class="row">
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-body text-center">
+                        <i class="fas fa-user-circle fa-5x text-primary mb-3"></i>
+                        <h4>{{ user.name }}</h4>
+                        <p class="text-muted">{{ user.role.replace('_', ' ').title() }}</p>
+                        <span class="badge badge-{% if user.status == 'active' %}success{% else %}warning{% endif %}">
+                            {{ user.status.title() }}
+                        </span>
+                    </div>
+                </div>
+
+                <div class="card mt-3">
+                    <div class="card-header">
+                        <h5><i class="fas fa-cog"></i> Quick Actions</h5>
+                    </div>
+                    <div class="card-body">
+                        <a href="{{ url_for('profile.edit') }}" class="btn btn-primary btn-block">
+                            <i class="fas fa-edit"></i> Edit Profile
+                        </a>
+                        <a href="{{ url_for('profile.change_password') }}" class="btn btn-warning btn-block">
+                            <i class="fas fa-key"></i> Change Password
+                        </a>
+                        <a href="{{ url_for('profile.notifications') }}" class="btn btn-info btn-block">
+                            <i class="fas fa-bell"></i> Notifications
+                        </a>
+                        <a href="{{ url_for('profile.support') }}" class="btn btn-secondary btn-block">
+                            <i class="fas fa-life-ring"></i> Support
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-8">
+                <div class="card">
+                    <div class="card-header">
+                        <h5><i class="fas fa-info-circle"></i> Profile Information</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <p><strong>Name:</strong> {{ user.name }}</p>
+                                <p><strong>Email:</strong> {{ user.email }}</p>
+                                <p><strong>Contact:</strong> {{ user.contact_number }}</p>
+                                <p><strong>Role:</strong> {{ user.role.replace('_', ' ').title() }}</p>
+                            </div>
+                            <div class="col-md-6">
+                                {% if user.age %}
+                                    <p><strong>Age:</strong> {{ user.age }}</p>
+                                {% endif %}
+                                {% if user.profession %}
+                                    <p><strong>Profession:</strong> {{ user.profession }}</p>
+                                {% endif %}
+                                {% if user.address %}
+                                    <p><strong>Address:</strong> {{ user.address }}</p>
+                                {% endif %}
+                                <p><strong>Member Since:</strong> {{ user.created_at[:10] if user.created_at else 'Unknown' }}</p>
+                            </div>
+                        </div>
+
+                        {% if user.role == 'service_provider' %}
+                            <hr>
+                            <h6><i class="fas fa-briefcase"></i> Professional Information</h6>
+                            {% if user.professional_description %}
+                                <p><strong>Description:</strong> {{ user.professional_description }}</p>
+                            {% endif %}
+                            {% if user.expertise %}
+                                <p><strong>Expertise:</strong></p>
+                                <div class="mb-2">
+                                    {% for skill in user.expertise.split(',') %}
+                                        <span class="badge badge-primary">{{ skill.strip() }}</span>
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                            {% if user.preferred_locations %}
+                                <p><strong>Service Areas:</strong> {{ user.preferred_locations }}</p>
+                            {% endif %}
+                            {% if user.portfolio_url %}
+                                <p><strong>Portfolio:</strong> <a href="{{ user.portfolio_url }}" target="_blank">{{ user.portfolio_url }}</a></p>
+                            {% endif %}
+                        {% endif %}
+                    </div>
+                </div>
+
+                <div class="card mt-3">
+                    <div class="card-header">
+                        <h5><i class="fas fa-shield-alt"></i> Account Security</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <p>
+                                    <i class="fas fa-envelope {% if user.email_verified %}text-success{% else %}text-warning{% endif %}"></i>
+                                    Email: 
+                                    {% if user.email_verified %}
+                                        <span class="text-success">Verified</span>
+                                    {% else %}
+                                        <span class="text-warning">Not Verified</span>
+                                    {% endif %}
+                                </p>
+                            </div>
+                            <div class="col-md-6">
+                                <p>
+                                    <i class="fas fa-id-card {% if user.nid_verified %}text-success{% else %}text-warning{% endif %}"></i>
+                                    NID: 
+                                    {% if user.nid_verified %}
+                                        <span class="text-success">Verified</span>
+                                    {% else %}
+                                        <span class="text-warning">Not Verified</span>
+                                    {% endif %}
+                                </p>
+                            </div>
+                        </div>
+                        {% if not user.email_verified or not user.nid_verified %}
+                            <div class="alert alert-warning">
+                                <i class="fas fa-exclamation-triangle"></i>
+                                Complete your verification to access all features and build trust with other users.
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
+
