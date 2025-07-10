@@ -196,7 +196,7 @@
                     <!-- Chat Input -->
                     <div class="chat-input">
                         <form id="messageForm" class="d-flex">
-                            {{ csrf_token() }}
+                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                             <input type="hidden" name="booking_id" value="{{ booking.id }}">
                             <input type="text" 
                                    class="form-control" 
@@ -260,6 +260,7 @@
             const sendButton = $('#sendButton');
             const typingIndicator = $('#typingIndicator');
             const bookingId = {{ booking.id }};
+            const csrfToken = $("input[name='csrf_token']").val();
             
             let typingTimer;
             let isTyping = false;
@@ -284,10 +285,13 @@
                 sendButton.html('<i class="fas fa-spinner fa-spin"></i>');
                 
                 $.ajax({
-                    url: '{{ url_for("chat.send_message") }}',
+                    url: '{{ url_for("chat.send_message", booking_id=booking.id) }}',
                     method: 'POST',
-                    data: messageForm.serialize() + "&csrf_token=" + $("input[name=\"csrf_token\"]").val(),
-                    contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
+                    data: {
+                        booking_id: bookingId,
+                        message_content: messageContent,
+                        csrf_token: csrfToken
+                    },
                     success: function(response) {
                         if (response.success) {
                             // Add message to chat
@@ -319,8 +323,8 @@
                             alert('Error sending message: ' + response.error);
                         }
                     },
-                    error: function() {
-                        alert('Error sending message. Please try again.');
+                    error: function(xhr) {
+                        alert('Error sending message: ' + xhr.responseJSON?.error || 'Please try again.');
                     },
                     complete: function() {
                         // Re-enable send button
@@ -345,8 +349,7 @@
                     $.ajax({
                         url: '{{ url_for("chat.typing_indicator", booking_id=booking.id) }}',
                         method: 'POST',
-                        data: { 'is_typing': true, 'csrf_token': $("input[name=\"csrf_token\"]").val() },
-                        contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
+                        data: { is_typing: true, csrf_token: csrfToken },
                         success: function(response) {
                             // Handle success if needed
                         },
@@ -360,10 +363,9 @@
                 typingTimer = setTimeout(function() {
                     isTyping = false;
                     $.ajax({
-                        url: "{{ url_for("chat.typing_indicator", booking_id=booking.id) }}",
+                        url: "{{ url_for('chat.typing_indicator', booking_id=booking.id) }}",
                         method: "POST",
-                        data: { "is_typing": false, "csrf_token": $("input[name=\"csrf_token\"]").val() },
-                        contentType: "application/x-www-form-urlencoded; charset=UTF-8",
+                        data: { is_typing: false, csrf_token: csrfToken },
                         success: function(response) {
                             // Handle success if needed
                         },
@@ -390,6 +392,7 @@
                     $.ajax({
                         url: '{{ url_for("chat.delete_message", message_id=0) }}'.replace('0', messageId),
                         method: 'POST',
+                        data: { csrf_token: csrfToken },
                         success: function(response) {
                             if (response.success) {
                                 messageElement.find('.message-text').html('<em class="text-muted">[Message deleted]</em>');
@@ -430,9 +433,9 @@
             
             // Mark messages as read when page loads
             $.ajax({
-                url: "{{ url_for("chat.mark_messages_read", booking_id=booking.id) }}",
+                url: "{{ url_for('chat.mark_read', booking_id=booking.id) }}",
                 method: "POST",
-                data: { booking_id: bookingId, csrf_token: $("input[name=\"csrf_token\"]").val() },
+                data: { booking_id: bookingId, csrf_token: csrfToken },
                 success: function(response) {
                     // Handle success if needed
                 },
@@ -447,4 +450,3 @@
     </script>
 </body>
 </html>
-

@@ -50,12 +50,16 @@ def booking_chat(booking_id):
             if message['receiver_id'] == g.user['id'] and not message.get('is_read', False):
                 db.update('Chat_Messages', message['id'], {'is_read': True})
     except Exception as e:
-        print(f"Error marking messages as read: {    return render_template("chat/booking_chat.html", 
+        print(f"Error marking messages as read: {e}")
+        flash('Error marking messages as read.', 'error')
+    
+    return render_template("chat/booking_chat.html", 
                          booking=booking, 
                          messages=messages, 
-                         other_user)
+                         other_user=other_user,
+                         service=service)
 
-@bp.route("/send_message", methods=["POST"])
+@bp.route("/send_message/<int:booking_id>", methods=["POST"])
 @login_required
 def send_message(booking_id):
     message_content = request.form.get("message_content", "").strip()    
@@ -251,7 +255,4 @@ def typing_indicator(booking_id):
     
     is_typing = request.form.get('is_typing', 'false').lower() == 'true'
     
-    # In a real-time system, this would broadcast to other participants
-    # For now, we'll just return success
     return jsonify({'success': True, 'is_typing': is_typing})
-

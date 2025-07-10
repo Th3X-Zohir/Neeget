@@ -1,1 +1,65 @@
-[]
+[
+    {
+        "booking_id": 1,
+        "sender_id": 5,
+        "receiver_id": 7,
+        "message_content": "hi",
+        "sent_at": "2025-07-11T03:11:57.179892",
+        "is_read": true,
+        "id": 1
+    },
+    {
+        "booking_id": 1,
+        "sender_id": 7,
+        "receiver_id": 5,
+        "message_content": "hello",
+        "sent_at": "2025-07-11T03:13:35.791527",
+        "is_read": true,
+        "id": 2
+    },
+    {
+        "booking_id": 1,
+        "sender_id": 5,
+        "receiver_id": 7,
+        "message_content": "can you help me",
+        "sent_at": "2025-07-11T03:13:56.613521",
+        "is_read": true,
+        "id": 3
+    },
+    {
+        "booking_id": 1,
+        "sender_id": 7,
+        "receiver_id": 5,
+        "message_content": "yes i can",
+        "sent_at": "2025-07-11T03:14:06.152314",
+        "is_read": true,
+        "id": 4
+    },
+    {
+        "booking_id": 1,
+        "sender_id": 7,
+        "receiver_id": 5,
+        "message_content": "asd",
+        "sent_at": "2025-07-11T03:14:09.704610",
+        "is_read": true,
+        "id": 5
+    },
+    {
+        "booking_id": 1,
+        "sender_id": 5,
+        "receiver_id": 7,
+        "message_content": "When can we schedule this service?",
+        "sent_at": "2025-07-11T03:14:17.880312",
+        "is_read": true,
+        "id": 6
+    },
+    {
+        "booking_id": 1,
+        "sender_id": 7,
+        "receiver_id": 5,
+        "message_content": "yes",
+        "sent_at": "2025-07-11T03:14:25.765872",
+        "is_read": true,
+        "id": 7
+    }
+]

@@ -4,5 +4,61 @@
         "notification_type": "in_app",
         "message": "New booking request from Zohir Rayhan for test",
         "id": 1
+    },
+    {
+        "user_id": 7,
+        "notification_type": "in_app",
+        "message": "New message from Zohir Rayhan about booking #1",
+        "sent_at": "2025-07-11T03:11:57.181401",
+        "is_read": false,
+        "id": 2
+    },
+    {
+        "user_id": 5,
+        "notification_type": "in_app",
+        "message": "New message from service about booking #1",
+        "sent_at": "2025-07-11T03:13:35.793538",
+        "is_read": false,
+        "id": 3
+    },
+    {
+        "user_id": 7,
+        "notification_type": "in_app",
+        "message": "New message from Zohir Rayhan about booking #1",
+        "sent_at": "2025-07-11T03:13:56.614492",
+        "is_read": false,
+        "id": 4
+    },
+    {
+        "user_id": 5,
+        "notification_type": "in_app",
+        "message": "New message from service about booking #1",
+        "sent_at": "2025-07-11T03:14:06.153311",
+        "is_read": false,
+        "id": 5
+    },
+    {
+        "user_id": 5,
+        "notification_type": "in_app",
+        "message": "New message from service about booking #1",
+        "sent_at": "2025-07-11T03:14:09.705112",
+        "is_read": false,
+        "id": 6
+    },
+    {
+        "user_id": 7,
+        "notification_type": "in_app",
+        "message": "New message from Zohir Rayhan about booking #1",
+        "sent_at": "2025-07-11T03:14:17.881311",
+        "is_read": false,
+        "id": 7
+    },
+    {
+        "user_id": 5,
+        "notification_type": "in_app",
+        "message": "New message from service about booking #1",
+        "sent_at": "2025-07-11T03:14:25.765872",
+        "is_read": false,
+        "id": 8
     }
 ]
