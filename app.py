@@ -32,16 +32,16 @@ def create_app():
     import profile
     app.register_blueprint(profile.bp)
     
-    @app.route('/')
+    @app.route("/")
     def index():
-        if g.user:
-            if g.user['role'] == 'admin':
-                return redirect(url_for('admin_dashboard'))
-            elif g.user['role'] == 'service_provider':
-                return redirect(url_for('provider_dashboard'))
+        if g.user and "role" in g.user:
+            if g.user["role"] == "admin":
+                return redirect(url_for("admin_dashboard"))
+            elif g.user["role"] == "service_provider":
+                return redirect(url_for("provider_dashboard"))
             else:
-                return redirect(url_for('user_dashboard'))
-        return render_template('index.html')
+                return redirect(url_for("user_dashboard"))
+        return render_template("index.html")
     
     @app.route("/user_dashboard")
     def user_dashboard():

@@ -15,8 +15,8 @@
                         {{ g.user.name[0].upper() if g.user and g.user.name else 'U' }}
                     </div>
                     <div>
-                        <h1 class="text-white font-weight-bold mb-1">Welcome back, {{ g.user.name.split()[0] if g.user and g.user.name else 'User' }}!</h1>
-                        <p class="text-white-50 mb-2">{{ g.user.email if g.user and g.user.email else 'user@example.com' }}</p>
+                        <h1 class="text-white font-weight-bold mb-1">Welcome back, {{ g.user.get("name", "User").split()[0] if g.user and g.user.get("name") else "User" }}!</h1>
+                        <p class="text-white-50 mb-2">{{ g.user.get("email", "user@example.com") if g.user and g.user.get("email") else "user@example.com" }}</p>
                         <div class="d-flex align-items-center">
                             <span class="badge badge-success mr-2">
                                 <i class="fas fa-circle mr-1"></i>Active Member

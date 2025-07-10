@@ -12,11 +12,11 @@
             <div class="col-lg-8">
                 <div class="d-flex align-items-center">
                     <div class="profile-avatar mr-4" style="width: 80px; height: 80px; background: rgba(255,255,255,0.2); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 2rem; font-weight: bold; border: 3px solid rgba(255,255,255,0.3);">
-                        {{ user.name[0].upper() }}
+                        {{ user["name"][0].upper() }}
                     </div>
                     <div>
-                        <h1 class="text-white font-weight-bold mb-1">{{ user.name }}</h1>
-                        <p class="text-white-50 mb-2">{{ user.role.replace('_', ' ').title() }}</p>
+                        <h1 class="text-white font-weight-bold mb-1">{{ user.get("name", "User") }}</h1>
+                        <p class="text-white-50 mb-2">{{ user.get("role", "").replace("_", " ").title() }}</p>
                         <div class="d-flex align-items-center">
                             <span class="badge badge-{% if user.status == 'active' %}success{% else %}warning{% endif %} mr-2">
                                 <i class="fas fa-circle mr-1"></i>{{ user.status.title() }}
