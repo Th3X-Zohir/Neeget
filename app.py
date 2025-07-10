@@ -8,9 +8,7 @@ def create_app():
     app = Flask(__name__)
     app.config.from_object('config.Config')
     
-    # Initialize CSRF protection
-    csrf = CSRFProtect(app)
-    
+    app.config["WTF_CSRF_ENABLED"] = False
     # Initialize DataManager
     app.db = DataManager(app.config['JSON_DATABASE_DIR'])
     

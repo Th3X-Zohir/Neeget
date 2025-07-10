@@ -31,7 +31,7 @@ class ServiceForm(FlaskForm):
     location = StringField('Location', validators=[Length(max=255)])
 
 class BookingForm(FlaskForm):
-    service_date = DateTimeField('Service Date', validators=[DataRequired()])
+    service_date = DateTimeField("Service Date", format="%Y-%m-%dT%H:%M", validators=[DataRequired()])
     payment_method = SelectField('Payment Method', choices=[('bkash', 'bKash'), ('nagad', 'Nagad'), ('card', 'Card')], validators=[DataRequired()])
 
 class ReviewForm(FlaskForm):

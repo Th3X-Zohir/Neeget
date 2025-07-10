@@ -5,7 +5,7 @@
         "provider_id": 3,
         "service_name": "Deep House Cleaning",
         "description": "Complete deep cleaning service including all rooms, bathrooms, kitchen, and common areas. Includes dusting, vacuuming, mopping, and sanitizing.",
-        "price": 150.00,
+        "price": 150.0,
         "location": "Downtown, Midtown"
     },
     {
@@ -14,7 +14,7 @@
         "provider_id": 3,
         "service_name": "Regular House Maintenance",
         "description": "Weekly or bi-weekly house cleaning service to maintain cleanliness and hygiene.",
-        "price": 80.00,
+        "price": 80.0,
         "location": "Downtown, Midtown, Suburbs"
     },
     {
@@ -23,7 +23,7 @@
         "provider_id": 4,
         "service_name": "Emergency Plumbing Repair",
         "description": "24/7 emergency plumbing services for leaks, clogs, and pipe bursts.",
-        "price": 120.00,
+        "price": 120.0,
         "location": "City-wide"
     },
     {
@@ -32,7 +32,7 @@
         "provider_id": 4,
         "service_name": "Bathroom Installation",
         "description": "Complete bathroom plumbing installation including fixtures, pipes, and connections.",
-        "price": 500.00,
+        "price": 500.0,
         "location": "City-wide"
     },
     {
@@ -41,8 +41,16 @@
         "provider_id": 4,
         "service_name": "Basic Electrical Repair",
         "description": "Basic electrical repairs including outlet installation, switch replacement, and light fixture installation.",
-        "price": 75.00,
+        "price": 75.0,
         "location": "Downtown, Midtown"
+    },
+    {
+        "category_id": 4,
+        "provider_id": 7,
+        "service_name": "test",
+        "description": "test",
+        "price": 22.0,
+        "location": "Dhaka,Bangladesh",
+        "id": 6
     }
 ]
-

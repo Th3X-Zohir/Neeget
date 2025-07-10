@@ -1,1 +1,11 @@
-[]
+[
+    {
+        "booking_id": 1,
+        "payment_method": "bkash",
+        "payment_amount": 22.0,
+        "platform_fee": 2.2,
+        "total_amount": 24.2,
+        "payment_status": "pending",
+        "id": 1
+    }
+]

@@ -1,1 +1,8 @@
-[]
+[
+    {
+        "user_id": 7,
+        "notification_type": "in_app",
+        "message": "New booking request from Zohir Rayhan for test",
+        "id": 1
+    }
+]

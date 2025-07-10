@@ -1,5 +1,7 @@
 /* Custom styles for Neeget platform */
+@import url('mobile.css');
 
+/* Main theme colors */
 :root {
     --primary-color: #007bff;
     --success-color: #28a745;
