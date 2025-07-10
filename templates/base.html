@@ -6,25 +6,48 @@
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
-    <meta name="theme-color" content="#007bff">
+    <meta name="theme-color" content="#1A2C42">
     
     <title>{% block title %}Neeget - Service Marketplace{% endblock %}</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
     
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
     <!-- Custom CSS -->
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/modern-style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/mobile-modern.css') }}">
     
     {% block extra_css %}{% endblock %}
 </head>
 <body>
-    <!-- Navigation -->
-    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+    <!-- Mobile App Bar (hidden on desktop) -->
+    <div class="mobile-app-bar">
+        <button class="mobile-app-bar-action" id="mobileBackBtn" style="visibility: hidden;">
+            <i class="fas fa-arrow-left"></i>
+        </button>
+        <div class="mobile-app-bar-title" id="mobileTitle">
+            {% block mobile_title %}Neeget{% endblock %}
+        </div>
+        <button class="mobile-app-bar-action" id="mobileMenuBtn">
+            <i class="fas fa-search"></i>
+        </button>
+    </div>
+
+    <!-- Desktop Navigation (hidden on mobile) -->
+    <nav class="navbar navbar-expand-lg navbar-dark modern-nav">
         <div class="container">
-            <a class="navbar-brand" href="{{ url_for('index') }}">
-                <i class="fas fa-handshake"></i> Neeget
+            <a class="navbar-brand modern-brand" href="{{ url_for('index') }}">
+                <i class="fas fa-handshake brand-icon"></i> 
+                <span class="brand-text">Neeget</span>
             </a>
             
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav">
@@ -98,8 +121,46 @@
 
     <!-- Main Content -->
     <main class="main-content">
-        {% block content %}{% endblock %}
+        <!-- Mobile Main Content Wrapper -->
+        <div class="mobile-main-content">
+            {% block content %}{% endblock %}
+        </div>
     </main>
+
+    <!-- Mobile Bottom Navigation (hidden on desktop) -->
+    <nav class="mobile-bottom-nav">
+        <a href="{{ url_for('index') }}" class="mobile-bottom-nav-item {% if request.endpoint == 'index' %}active{% endif %}">
+            <i class="fas fa-home mobile-bottom-nav-icon"></i>
+            <span class="mobile-bottom-nav-label">Home</span>
+        </a>
+        <a href="{{ url_for('services.browse') }}" class="mobile-bottom-nav-item {% if request.endpoint == 'services.browse' %}active{% endif %}">
+            <i class="fas fa-search mobile-bottom-nav-icon"></i>
+            <span class="mobile-bottom-nav-label">Browse</span>
+        </a>
+        {% if g.user %}
+            <a href="{{ url_for('bookings.list_bookings') }}" class="mobile-bottom-nav-item {% if request.endpoint == 'bookings.list_bookings' %}active{% endif %}">
+                <i class="fas fa-calendar mobile-bottom-nav-icon"></i>
+                <span class="mobile-bottom-nav-label">Bookings</span>
+            </a>
+            <a href="{{ url_for('chat.list_conversations') if 'chat.list_conversations' in url_for.__globals__ else '#' }}" class="mobile-bottom-nav-item">
+                <i class="fas fa-comments mobile-bottom-nav-icon"></i>
+                <span class="mobile-bottom-nav-label">Messages</span>
+            </a>
+            <a href="{{ url_for('profile.view') }}" class="mobile-bottom-nav-item {% if request.endpoint == 'profile.view' %}active{% endif %}">
+                <i class="fas fa-user mobile-bottom-nav-icon"></i>
+                <span class="mobile-bottom-nav-label">Profile</span>
+            </a>
+        {% else %}
+            <a href="{{ url_for('auth.login') }}" class="mobile-bottom-nav-item">
+                <i class="fas fa-sign-in-alt mobile-bottom-nav-icon"></i>
+                <span class="mobile-bottom-nav-label">Login</span>
+            </a>
+            <a href="{{ url_for('auth.register') }}" class="mobile-bottom-nav-item">
+                <i class="fas fa-user-plus mobile-bottom-nav-icon"></i>
+                <span class="mobile-bottom-nav-label">Register</span>
+            </a>
+        {% endif %}
+    </nav>
 
     <!-- Footer -->
     <footer class="bg-dark text-light py-4 mt-5">
@@ -120,6 +181,7 @@
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js"></script>
     <script src="{{ url_for('static', filename='js/mobile.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/mobile-modern.js') }}"></script>
     
     {% block extra_js %}{% endblock %}
     

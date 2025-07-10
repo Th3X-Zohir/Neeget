@@ -1,6 +1,5 @@
 from flask import Flask, render_template, redirect, url_for, g, session
 from flask_wtf.csrf import CSRFProtect
-from flask_moment import Moment
 from data_manager import DataManager
 import auth
 import os
@@ -11,9 +10,6 @@ def create_app():
     
     # Enable CSRF protection
     csrf = CSRFProtect(app)
-    
-    # Initialize Moment
-    moment = Moment(app)
     
     # Initialize DataManager
     app.db = DataManager(app.config['JSON_DATABASE_DIR'])
