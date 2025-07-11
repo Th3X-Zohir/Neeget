@@ -45,47 +45,121 @@ def create_app():
     
     @app.route("/user_dashboard")
     def user_dashboard():
-        # Dummy data for stats and bookings for testing
+        if not g.user or ("role" not in g.user) or (g.user["role"] != "user"):
+            return redirect(url_for("auth.login"))
+
+        user_id = g.user["id"]
+        all_bookings = app.db.get_all("Bookings")
+        user_bookings = [b for b in all_bookings if b["user_id"] == user_id]
+
+        # Calculate stats
+        total_bookings = len(user_bookings)
+        pending_bookings = len([b for b in user_bookings if b["booking_status"] == "pending"])
+        completed_bookings = len([b for b in user_bookings if b["booking_status"] == "completed"])
+        favorite_services = len(app.db.find_by_attribute("Favorites", "user_id", user_id))
+
         stats = {
-            "total_bookings": 10,
-            "pending_bookings": 2,
-            "completed_bookings": 8,
-            "favorite_services": 5
+            "total_bookings": total_bookings,
+            "pending_bookings": pending_bookings,
+            "completed_bookings": completed_bookings,
+            "favorite_services": favorite_services
         }
-        recommended_services = [
-            {"id": 1, "service_name": "Gardening", "provider_name": "Alice Green", "category_name": "Home Services", "price": 50.00},
-            {"id": 2, "service_name": "Computer Repair", "provider_name": "Bob Fixit", "category_name": "Tech Services", "price": 75.00}
-        ]
-        bookings = [
-            {"id": 1, "service_name": "House Cleaning", "provider_name": "John Doe", "booking_date": "2025-07-15", "booking_time": "10:00 AM", "status": "pending"},
-            {"id": 2, "service_name": "Car Wash", "provider_name": "Jane Smith", "booking_date": "2025-07-10", "booking_time": "02:00 PM", "status": "completed"}
-        ]
-        return render_template("user_dashboard.html", stats=stats, bookings=bookings, recommended_services=recommended_services)    
+
+        # Get recommended services (e.g., top 4 services, or based on user preferences)
+        # For now, let\'s just get all services and limit to 4
+        all_services = app.db.get_all("Services")
+        recommended_services = all_services[:4] # Placeholder for actual recommendation logic
+
+        # Prepare bookings data for display
+        bookings_display = []
+        for booking in user_bookings:
+            service = app.db.get_by_id("Services", booking["service_id"])
+            provider = app.db.get_by_id("Users", booking["provider_id"])
+            if service and provider:
+                bookings_display.append({
+                    "id": booking["id"],
+                    "service_name": service["service_name"],
+                    "provider_name": provider["name"],
+                    "booking_date": booking["booking_date"],
+                    "booking_time": booking["booking_date"].split("T")[1][:5] if "booking_date" in booking and "T" in booking["booking_date"] else "N/A",
+                    "status": booking["booking_status"]
+                })
+        
+        return render_template("user_dashboard.html", stats=stats, bookings=bookings_display, recommended_services=recommended_services)    
     @app.route("/provider_dashboard")
     def provider_dashboard():
-        # Dummy data for provider stats, booking requests, and services for testing
+        if not g.user or g.user["role"] != "service_provider":
+            return redirect(url_for("auth.login"))
+
+        provider_id = g.user["id"]
+        all_services = app.db.get_all("Services")
+        my_services = [s for s in all_services if s["provider_id"] == provider_id]
+
+        all_bookings = app.db.get_all("Bookings")
+        provider_bookings = [b for b in all_bookings if b["provider_id"] == provider_id]
+
+        all_reviews = app.db.get_all("Reviews")
+        my_reviews = [r for r in all_reviews if r["provider_id"] == provider_id]
+
+        # Calculate provider stats
+        total_services = len(my_services)
+        total_bookings = len(provider_bookings)
+        average_rating = sum([r["rating"] for r in my_reviews]) / len(my_reviews) if my_reviews else 0
+        total_earnings = sum([b["price"] for b in provider_bookings if b["booking_status"] == "completed"]) # Assuming price is in booking
+        response_rate = 95 # Placeholder
+        completion_rate = len([b for b in provider_bookings if b["booking_status"] == "completed"]) / total_bookings * 100 if total_bookings else 0
+        satisfaction_rate = 96 # Placeholder
+
         provider_stats = {
-            "total_services": 3,
-            "total_bookings": 15,
-            "average_rating": 4.8,
-            "total_earnings": 1200,
-            "response_rate": 95,
-            "completion_rate": 98,
-            "satisfaction_rate": 96
+            "total_services": total_services,
+            "total_bookings": total_bookings,
+            "average_rating": round(average_rating, 1),
+            "total_earnings": round(total_earnings, 2),
+            "response_rate": response_rate,
+            "completion_rate": round(completion_rate, 1),
+            "satisfaction_rate": satisfaction_rate
         }
-        booking_requests = [
-            {"id": 1, "service_name": "Plumbing Repair", "user_name": "Alice Brown", "booking_date": "2025-07-18", "booking_time": "09:00 AM", "status": "pending"},
-            {"id": 2, "service_name": "Electrical Wiring", "user_name": "Bob White", "booking_date": "2025-07-16", "booking_time": "01:00 PM", "status": "accepted"}
-        ]
-        my_services = [
-            {"id": 1, "service_name": "Plumbing Services", "category_name": "Home Services", "status": "active", "views": 120, "price": 80.00},
-            {"id": 2, "service_name": "Electrical Services", "category_name": "Home Services", "status": "active", "views": 90, "price": 100.00}
-        ]
-        recent_reviews = [
-            {"user_name": "Charlie Green", "rating": 5, "comment": "Great service, very professional!", "created_at": "2025-07-09"},
-            {"user_name": "Diana Blue", "rating": 4, "comment": "Good work, but a bit slow.", "created_at": "2025-07-08"}
-        ]
-        return render_template("provider_dashboard.html", provider_stats=provider_stats, booking_requests=booking_requests, my_services=my_services, recent_reviews=recent_reviews)
+
+        # Prepare booking requests data for display
+        booking_requests = []
+        for booking in provider_bookings:
+            user = app.db.get_by_id("Users", booking["user_id"])
+            service = app.db.get_by_id("Services", booking["service_id"])
+            if user and service:
+                booking_requests.append({
+                    "id": booking["id"],
+                    "service_name": service["service_name"],
+                    "provider_name": user["name"],
+                    "booking_date": booking["booking_date"],
+                    "booking_time": booking["booking_date"].split("T")[1][:5] if "booking_date" in booking and "T" in booking["booking_date"] else "N/A",
+                    "status": booking["booking_status"]
+                })
+        
+        # Prepare my services data for display
+        my_services_display = []
+        for service in my_services:
+                my_services_display.append({
+                    "id": service["id"],
+                    "service_name": service["service_name"],
+                    "category_name": app.db.get_by_id("Categories", service["category_id"])["name"],
+                    "status": service["status"],
+                    "views": service.get("views", 0),
+                    "price": service["price"]
+                })
+
+        # Prepare recent reviews data for display
+        recent_reviews = []
+        for review in my_reviews:
+            user = app.db.get_by_id("Users", review["user_id"])
+            if user:
+                recent_reviews.append({
+                    "user_name": user["name"],
+                    "rating": review["rating"],
+                    "comment": review["comment"],
+                    "created_at": review["created_at"]
+                })
+
+        return render_template("provider_dashboard.html", provider_stats=provider_stats, booking_requests=booking_requests, my_services=my_services_display, recent_reviews=recent_reviews)
     
     @app.route("/admin_dashboard")
     def admin_dashboard():
@@ -96,5 +170,7 @@ def create_app():
 if __name__ == "__main__":
     app = create_app()
     app.run(host="0.0.0.0", port=5000, debug=True)
+
+
 
 
